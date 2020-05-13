@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+{% block content %}
+    <div class="container">
+        <br>
+        <!-- Displaying Add, delete, edited messages -->
+        {% for message in messages %}
+            <div class="alert alert-warning alert-dismissable" role="alert">
+                <button class="close" data-dismiss="alert">
+                    <small><sup>x</sup></small></button>
+                {{message }}
+            </div>
+        {% endfor %}
+
+        <!-- form to add new items -->
+        <form action="/addTodoItem/" method="post" >
+            {% csrf_token %}
+            <div style="padding-top: 17px;" align="center">
+                <input type="text" name="content"> &nbsp;&nbsp;
+                <button type="submit"  class="btn btn-success">
+                <span class="glyphicon glyphicon-plus"></span>&nbsp;Add ToDo Item</button>
+            </div>
+            <br>
+        </form>
+               <table class="table table-bordered" >
+
+               {% for i in all_items %}
+                   {% if i.completed %}
+                   <!-- if the task is done -->
+                       <tr class="table-secondary">
+
+                           <td align="center" ><a href="{% url 'edit' i.id %}"><div style="font-size:30px;" align="center"><del> {{i.item}} </del></div></a></td>
+
+                           <td align="center"><form action="/uncross/{{i.id}}/" method="post" >{% csrf_token  %}
+                            <button type="submit"  class="btn btn-success" style="height:18px; width:85px;">
+                            Uncross</button>
+                           </form></td>
+
+                           <td align="center"><form action="/deleteTodoItem/{{i.id}}/" method="post">{% csrf_token  %}
+                            <button type="submit"  class="btn btn-success" style="height:18px; width:85px;">
+                            <span class="glyphicon glyphicon-remove"></span>&nbsp;Delete</button>
+                                </form>
+                           </td>
+                       </tr>
+                   <br>
+
+                   {% else %}
+                   <!-- if the task is not done -->
+                       <tr>
+                            <td align="center"><a href="{% url 'edit' i.id%}"><div style="font-size:30px;" align="center"> {{i.item}}</div></a></td>
+
+                            <td align="center"><form action="/cross_off/{{i.id}}/" method="post" >{% csrf_token  %}
+                                <button type="submit"  class="btn btn-success" style="height:18px; width:85px;">
+                                Cross Off</button>
+                                </form>
+                            </td>
+
+                           <td align="center"><form action="/deleteTodoItem/{{i.id}}/" method="post">{% csrf_token  %}
+                                <button type="submit"  class="btn btn-success" style="height:18px; width:85px;">
+                                <span class="glyphicon glyphicon-remove"></span>&nbsp;Delete</button>
+                                </form>
+                            </td>
+                        </tr>
+                   <br>
+                   {% endif %}
+               {% endfor %}
+               </table>
+    </div>
+{% endblock content %}
