@@ -2,24 +2,69 @@ from django.shortcuts import render, redirect
 from .models import TodoListItem
 from django.http import HttpResponseRedirect
 from django.contrib import messages
-from datetime import datetime
+import datetime
+from django.utils import timezone
+
+
 
 # Normal View of the webpage
 def todoappView(request):
-    all_todo_items = TodoListItem.objects.all()
-    date = datetime.now()
-    formated_date = date.strftime("%d-%m-%Y")
-    return render(request,'todolist.html',{'all_items':all_todo_items,'date':formated_date})
+    if request.method == 'POST':
+        context = {}
+        dates = request.POST['dates']
+        print(dates)
+        all_todo_items = TodoListItem.objects.filter(date = dates)
+        date = datetime.datetime.now()
+        formated_date = date.strftime("%Y-%m-%d")
+        pending = TodoListItem.objects.filter(completed=False).exclude(future=True)
+        future = TodoListItem.objects.filter(future=True).exclude(date = formated_date)
+        context['all_items'] = all_todo_items
+        context['today'] = formated_date
+        context['items'] = pending
+        context['future'] = future
+        context['dates'] = dates
+        return render(request, 'todolist.html',context)
+    else:
+        context = {}
+        date = datetime.datetime.now()
+        formated_date = date.strftime("%Y-%m-%d")
+        yesterday = date - datetime.timedelta(days=1)
+        formated_yest = yesterday.strftime("%Y-%m-%d")
+        yest_items = TodoListItem.objects.filter(date = formated_yest)
+        for i in yest_items:
+            i.future = False
+            i.save()
+        all_todo_items = TodoListItem.objects.filter(date = formated_date)
+        pending = TodoListItem.objects.filter(completed = False).exclude(future=True)
+        future = TodoListItem.objects.filter(future=True).exclude(date=formated_date)
+        context['all_items'] = all_todo_items
+        context['today'] = formated_date
+        context['items'] = pending
+        context['future'] = future
+        return render(request,'todolist.html',context)
 
 
 # Adding Items
 def addTodoView(request):
     x = request.POST['content']
+    date = datetime.datetime.now()
+    formated_date = date.strftime("%Y-%m-%d")
     if x == '':
         return HttpResponseRedirect('/')
-    new_item = TodoListItem(item=x)
+    new_item = TodoListItem(item=x, date=formated_date,future=True)
     new_item.save()
     messages.success(request,('Item has been Added!!'))
+    return HttpResponseRedirect('/')
+
+
+def addFutureTask(request):
+    x = request.POST['task']
+    date = request.POST['date']
+    if x == '':
+        return HttpResponseRedirect('/')
+    new_item = TodoListItem(item = x, date = date, future = True)
+    new_item.save()
+    messages.success(request, ('Item has been Recorded!!'))
     return HttpResponseRedirect('/')
 
 

@@ -47,9 +47,16 @@
                         </a>
 
                 <!-- displaying current date -->
-                {% if date %}
-                        <a  style="font-size:15px; color:white; padding-left:20px;">{{ date }}</a>
-                {% endif %}
+<!--                {% if today %}-->
+<!--                        <a  style="font-size:15px; color:white; padding-left:20px;">{{ today }}</a>-->
+<!--                {% endif %}-->
+                <a style="font-size:15px; color:white; padding-left:720px;">
+                <form method="POST" action="/">
+                {% csrf_token %}
+                        <input type="date" name="dates" value="{{ today }}" min="{{ today }}" max = "{{ today }}" style="visibility: hidden;">
+                    <button type="submit" class="btn btn-success">Today</button>
+                    </form>
+            </a>
 
             </nav>
             {% block content %}

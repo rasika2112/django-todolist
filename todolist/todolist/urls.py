@@ -22,6 +22,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('',views.todoappView, name='home'),
     path('addTodoItem/',views.addTodoView, name='add'),
+    path('addFutureTask/',views.addFutureTask, name='addFutureTask'),
     path('deleteTodoItem/<int:i>/',views.deleteTodoView, name='delete'),
     path('cross_off/<int:i>/',views.cross_off, name='cross_off'),
     path('uncross/<int:i>/',views.uncross, name='uncross'),
