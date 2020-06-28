@@ -13,12 +13,20 @@ def todoappView(request):
         context = {}
         dates = request.POST['dates']
         print(dates)
-        all_todo_items = TodoListItem.objects.filter(date = dates)
+        all_items = TodoListItem.objects.filter(date = dates)
         date = datetime.datetime.now()
         formated_date = date.strftime("%Y-%m-%d")
-        pending = TodoListItem.objects.filter(completed=False).exclude(future=True)
-        future = TodoListItem.objects.filter(future=True).exclude(date = formated_date)
-        context['all_items'] = all_todo_items
+        all_todo_items = TodoListItem.objects.all().order_by('date')
+        pending = []
+        future = []
+        for item in all_todo_items:
+            d = datetime.datetime(item.date.year,item.date.month,item.date.day,0,0,0,0,None)
+            if d > date:
+                future.append(item)
+            elif d < date:
+                if d.day != date.day:
+                    pending.append(item)
+        context['all_items'] = all_items
         context['today'] = formated_date
         context['items'] = pending
         context['future'] = future
@@ -34,10 +42,18 @@ def todoappView(request):
         for i in yest_items:
             i.future = False
             i.save()
-        all_todo_items = TodoListItem.objects.filter(date = formated_date)
-        pending = TodoListItem.objects.filter(completed = False).exclude(future=True)
-        future = TodoListItem.objects.filter(future=True).exclude(date=formated_date)
-        context['all_items'] = all_todo_items
+        all_items = TodoListItem.objects.filter(date = formated_date)
+        all_todo_items = TodoListItem.objects.all().order_by('date')
+        pending = []
+        future = []
+        for item in all_todo_items:
+            d = datetime.datetime(item.date.year,item.date.month,item.date.day,0,0,0,0,None)
+            if d > date:
+                future.append(item)
+            elif d < date:
+                if d.day != date.day:
+                    pending.append(item)
+        context['all_items'] = all_items
         context['today'] = formated_date
         context['items'] = pending
         context['future'] = future
@@ -51,7 +67,7 @@ def addTodoView(request):
     formated_date = date.strftime("%Y-%m-%d")
     if x == '':
         return HttpResponseRedirect('/')
-    new_item = TodoListItem(item=x, date=formated_date,future=True)
+    new_item = TodoListItem(item=x, date=formated_date)
     new_item.save()
     messages.success(request,('Item has been Added!!'))
     return HttpResponseRedirect('/')
@@ -62,7 +78,7 @@ def addFutureTask(request):
     date = request.POST['date']
     if x == '':
         return HttpResponseRedirect('/')
-    new_item = TodoListItem(item = x, date = date, future = True)
+    new_item = TodoListItem(item = x, date = date)
     new_item.save()
     messages.success(request, ('Item has been Recorded!!'))
     return HttpResponseRedirect('/')

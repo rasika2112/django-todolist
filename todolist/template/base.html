@@ -24,6 +24,7 @@
         box-shadow: 2px 2px 5px black;
         transform: translate(0px,20px);
         }
+
         input[type="text"]{
         width:300px;
         height:38px;
@@ -31,11 +32,30 @@
         box-shadow: 2px 2px 5px black;
 
         }
-        button[type="submit"]{
+        button{
+            box-shadow: 2px 2px 2px;
+            
+        }
+
+        button:hover{
+            transform: scale(1.2);
+
+        }
+        
+       #today{
         width:130px;
         height:24px;
         box-shadow: 2px 2px 5px black;
         padding-bottom: 25px;
+        }
+
+        #ok{
+            background-color: green;
+        }
+
+        #right1, #right2{
+            padding-top: 30px;
+            background-color: black;
         }
     </style>
 
@@ -54,7 +74,7 @@
                 <form method="POST" action="/">
                 {% csrf_token %}
                         <input type="date" name="dates" value="{{ today }}" min="{{ today }}" max = "{{ today }}" style="visibility: hidden;">
-                    <button type="submit" class="btn btn-success">Today</button>
+                    <button type="submit" class="btn btn-success" id="today">Today</button>
                     </form>
             </a>
 
