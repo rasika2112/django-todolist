@@ -16,7 +16,6 @@
 
     <style>
         h1{
-        background-color:yellow;
         padding-top: 13px;
         padding-bottom: 13px;
         margin:0px;
@@ -47,7 +46,11 @@
         height:24px;
         box-shadow: 2px 2px 5px black;
         padding-bottom: 25px;
+        float: right;
+        font-size: 15px;
+        color: white;
         }
+
 
         #ok{
             background-color: green;
@@ -57,26 +60,40 @@
             padding-top: 30px;
             background-color: black;
         }
+        .nav-brand{
+            font-size:30px; 
+            color:white;
+        }
+        .nav-item{
+            float: right;
+        }
+
+        .text-muted{
+            font-size: 13px;
+        }
+
+        .todo{
+            font-size: 30px;
+        }
+
+
+       
     </style>
 
     <body>
             <!-- Navbar -->
             <nav class="navbar sticky-top navbar-expand-lg navbar-dark bg-dark">
-                        <a href="{% url 'home' %}" class="nav-link" style="font-size:30px; color:white;">
-                            <span class="glyphicon glyphicon-th-list" style="font-size:30px;"></span>&nbsp;TO DO LIST
+                        <a href="{% url 'home' %}" class="nav-brand">
+                            <span class="glyphicon glyphicon-th-list"></span>&nbsp;TO DO LIST
                         </a>
-
-                <!-- displaying current date -->
-<!--                {% if today %}-->
-<!--                        <a  style="font-size:15px; color:white; padding-left:20px;">{{ today }}</a>-->
-<!--                {% endif %}-->
-                <a style="font-size:15px; color:white; padding-left:720px;">
-                <form method="POST" action="/">
-                {% csrf_token %}
-                        <input type="date" name="dates" value="{{ today }}" min="{{ today }}" max = "{{ today }}" style="visibility: hidden;">
-                    <button type="submit" class="btn btn-success" id="today">Today</button>
-                    </form>
-            </a>
+                
+                        <a class="nav-item">
+                        <form method="POST" action="/">
+                        {% csrf_token %}
+                                <input type="date" name="dates" value="{{ today }}" min="{{ today }}" max = "{{ today }}" style="visibility: hidden;">
+                            <button type="submit" class="btn btn-success" id="today">Today</button>
+                            </form>
+                        </a>
 
             </nav>
             {% block content %}
